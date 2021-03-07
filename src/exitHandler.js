@@ -1,8 +1,4 @@
-const db = require('./database');
-
 async function exitHandler(options, exitCode) {
-
-  await db.exit();
 
   if (options.cleanup) console.log('clean');
   if (exitCode || exitCode === 0) console.log(exitCode);

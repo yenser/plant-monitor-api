@@ -9,11 +9,6 @@ const getDatabaseSize = async () => {
   return res.rows[0].pg_size_pretty;
 }
 
-const exit = async () => {
-  await pool.exit();
-}
-
 module.exports = {
-  getDatabaseSize,
-  exit
+  getDatabaseSize
 }

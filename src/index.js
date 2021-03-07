@@ -1,14 +1,61 @@
-// require('./exitHandler');
-const express = require('express');
+require('./exitHandler');
+const app = require('express')();
+const { Server } = require('socket.io');
+const http = require('http').createServer(app);
 const db = require('./database');
 const sys = require('./system');
 const cors = require('cors');
 const config = require('./config');
 
+const io = new Server(http, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST']
+  }
+});
+
 const main = async () => {
-  const app = express();
  
   app.use(cors());
+
+
+  io.on('connection', async (socket) => {
+    console.log(socket.id);
+
+    socket.on('getSystems', async () => {
+      console.log('getSystems')
+      const temp = await sys.getCpuTemp();
+  
+      const systems = [
+        {
+          system: 'carrack',
+          temp
+        }
+      ]
+  
+      console.log(systems);
+      socket.emit('systems', systems);
+    })
+  
+  });
+
+  setInterval(async () => {
+    const temp = await sys.getCpuTemp();
+
+    const systems = [
+      {
+        system: 'carrack',
+        temp
+      }
+    ]
+
+    console.log(systems);
+    io.emit('systems', systems);
+  }, 5000);
+
+
+  
+
 
   
   app.get('/dbsize', async (req, res) => {
@@ -17,13 +64,20 @@ const main = async () => {
     res.json({size}).status(200);
   });
 
-  app.get('/system', async (req, res) => {
+  app.get('/systems', async (req, res) => {
     const temp = await sys.getCpuTemp();
 
-    res.json({temp}).status(200);
+    const systems = [
+      {
+        system: 'carrack',
+        temp
+      }
+    ]
+
+    res.json(systems).status(200);
   })
   
-  app.listen(config.server.port, () => {
+  http.listen(config.server.port, () => {
     console.log(`App listening on http://localhost:${config.server.port}`);
   });
 }

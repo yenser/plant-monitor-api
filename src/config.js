@@ -6,7 +6,7 @@ config.server = {
 
 config.postgres = {
   user: 'app',
-  host: '192.168.50.85',
+  host: '192.168.50.156',
   database: 'plantmonitor',
   password: 'abc123',
   port: 5432,
