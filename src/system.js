@@ -1,5 +1,6 @@
 
-var { exec } = require('child_process');
+const { exec } = require('child_process');
+const db = require('./database');
 
 const getCpuTemp = async () => {
   return new Promise((resolve, reject) => {
@@ -14,6 +15,15 @@ const getCpuTemp = async () => {
   });
 }
 
+
+const registerDevice = () => {
+  setInterval( async () => {
+    const temp = await getCpuTemp();
+    await db.register('carrack', temp, 'host');
+  }, 5000);
+}
+
 module.exports = {
-  getCpuTemp
+  getCpuTemp,
+  registerDevice
 }
