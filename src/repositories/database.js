@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-const config = require('./config');
+const config = require('../config');
 
 const pool = new Pool(config.postgres);
 
@@ -41,6 +41,7 @@ const getImageIds = async (skip = 0, limit = 100) => {
 }
 
 module.exports = {
+  pool,
   getDatabaseSize,
   register,
   getSystems,

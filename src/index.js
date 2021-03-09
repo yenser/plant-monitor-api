@@ -3,7 +3,7 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const { Server } = require('socket.io');
 const http = require('http').createServer(app);
-const db = require('./database');
+const db = require('./repositories/database');
 const sys = require('./system');
 const cors = require('cors');
 const config = require('./config');
@@ -22,7 +22,10 @@ const main = async () => {
   exitHandler();
 
   app.use(cors());
+  app.use(bodyParser.json());
   app.use(bodyParser.raw({ type: 'image/jpeg', limit: '10mb'}));
+
+  require('./routes/devices')(app);
 
   app.get('/dbsize', async (req, res) => {
     const size = await db.getDatabaseSize();
@@ -43,9 +46,7 @@ const main = async () => {
     res.json(systems).status(200);
   });
 
-  app.get('/capture/:', async (req, res) => {
 
-  })
 
   app.post('/images/:fileName', async (req, res) => {
     

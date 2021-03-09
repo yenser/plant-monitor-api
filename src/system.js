@@ -1,6 +1,6 @@
 
 const { exec } = require('child_process');
-const db = require('./database');
+const db = require('./repositories/database');
 
 const getCpuTemp = async () => {
   return new Promise((resolve, reject) => {
