@@ -34,6 +34,10 @@ const getImage = async (imageId) => {
   }
 }
 
+const deleteImage = async (imageId) => {
+  await pool.query('DELETE FROM images WHERE id = $1 ;', [imageId]);
+}
+
 const getImageIds = async (skip = 0, limit = 100) => {
   const { rows } = await pool.query('SELECT id, name FROM images OFFSET $1 LIMIT $2 ;', [skip, limit]);
 
@@ -47,5 +51,6 @@ module.exports = {
   getSystems,
   saveImage,
   getImage,
-  getImageIds
+  getImageIds,
+  deleteImage
 }
