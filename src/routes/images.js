@@ -1,6 +1,7 @@
 const db = require('../repositories/database');
 const deviceRepo = require('../repositories/deviceRepo');
 const imageCapture = require('../handlers/imageCapture');
+const format = require('date-fns/format');
 
 
 module.exports = (app) => {
@@ -31,7 +32,7 @@ module.exports = (app) => {
     res.set({
       'Content-Type': image.content_type,
       'Content-Length': image.file.byteLength,
-      'Content-Disposition': `inline; filename="${image.name}";`
+      'Content-Disposition': `attachment; filename="${image.name}";`
     });
     res.send(image.file).status(200);
   });
@@ -46,15 +47,30 @@ module.exports = (app) => {
     res.sendStatus(200);
   })
 
-  app.get('/images/capture/:deviceId', async (req, res) => {
+  app.post('/images/capture/:deviceId', async (req, res) => {
     try {
       const device = await deviceRepo.getDeviceById(req.params.deviceId);
       if(device === null || device.type !== 'camera') {
         res.sendStatus(400);
         return;
       }
+
+      let name = req.body.name;
+      
+      if(!name) {
+        const deviceName = device.name.replace(/[ ,.]/g, "-")
+        name = `${deviceName}_${format(new Date(), 'yy-M-d_HH:mm:ss')}.jpg`;
+      }
+
+      console.log(name)
+
+      if(!name.includes('.jpg') && !name.includes('.jpeg')) {
+        name += '.jpg';
+      }
+
+      console.log(`Capturing image [${name}] from device [${device.name}]`);
   
-      const id = await imageCapture.captureImageAndSave(device);
+      const id = await imageCapture.captureImageAndSave(device, name);
   
       res.json({id}).status(201);
     } catch(e) {
