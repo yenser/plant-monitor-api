@@ -59,7 +59,7 @@ module.exports = (app) => {
       
       if(!name) {
         const deviceName = device.name.replace(/[ ,.]/g, "-")
-        name = `${deviceName}_${format(new Date(), 'yy-M-d_HH:mm:ss')}.jpg`;
+        name = `${deviceName}_${format(new Date(), 'yy-MM-dd_HH:mm:ss')}.jpg`;
       }
 
       console.log(name)
