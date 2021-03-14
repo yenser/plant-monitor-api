@@ -1,4 +1,5 @@
 const repo = require('../repositories/deviceRepo');
+const handler = require('../handlers/deviceHandler');
 
 module.exports = (app) => {
 
@@ -10,8 +11,8 @@ module.exports = (app) => {
 
   app.get('/devices', async (req, res) => {
 
-    const devices = await repo.getDevices();
-    
+    const devices = await handler.getDeviceStates();
+
     res.json(devices).status(200);
   });
 
